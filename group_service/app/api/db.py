@@ -1,6 +1,6 @@
 import os
 from sqlalchemy import (Column, Integer, MetaData, String, Table,
-                        create_engine)
+                        create_engine, ARRAY)
 from databases import Database
 
 DATABASE_URI = os.getenv('DATABASE_URI')
@@ -12,7 +12,7 @@ groups = Table(
     'groups',
     metadata,
     Column('id', Integer, primary_key=True),
-    Column('name', String(50))
+    Column('students', ARRAY(Integer))
 )
 
 database = Database(DATABASE_URI)

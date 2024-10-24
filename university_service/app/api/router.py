@@ -34,14 +34,14 @@ async def create_student(payload: StudentIn):
 
             # Create group if it doesn't exist
             if not group_exists:
-                create_group_payload = Group(id=payload.group_id, students=[student])
+                create_group_payload = Group(id=payload.group_id, students=[student_id])
                 create_group_response = await create_group(create_group_payload)
                 if create_group_response.status_code != 201:
                     raise HTTPException(status_code=500, detail=create_group_response.text)
             else:
                 get_group_response = await get_group(payload.group_id)
                 students = get_group_response.json()["students"]
-                students.append(student)
+                students.append(student_id)
                 update_group_payload = Group(id=payload.group_id, students=students)
                 update_group_response = await client.put(f"{GROUP_SERVICE_URL}/{payload.group_id}/", json=update_group_payload)
                 if update_group_response.status_code != 200:

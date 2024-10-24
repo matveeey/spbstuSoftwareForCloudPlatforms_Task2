@@ -10,4 +10,4 @@ class StudentOut(StudentIn):
 
 class Group(BaseModel):
     id: int
-    students: Optional[List[StudentOut]]
+    students: Optional[List[int]]
