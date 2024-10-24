@@ -1,0 +1,19 @@
+services:
+  student_service:
+    build: ./student_service
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    volumes:
+      - ./student_service/:/app/
+    ports:
+      - 8001:8000
+  db:
+    image: postgres:12.1-alpine
+    environment:
+      - POSTGRES_USER=student_db_username
+      - POSTGRES_PASSWORD=student_db_password
+      - POSTGRES_DB=student_db_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
