@@ -1,10 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
+import httpx, os
 
 from app.api.models import StudentOut, StudentIn, StudentUpdate
 from app.api import db_manager
 
 router = APIRouter()
+
+GROUP_SERVICE_URL = os.getenv('GROUP_SERVICE_URL')
 
 @router.post('/', response_model=StudentOut, status_code=201)
 async def create_student(payload: StudentIn):
@@ -13,7 +16,22 @@ async def create_student(payload: StudentIn):
         'id': student_id,
         **payload.dict()
     }
-    return response
+
+    # If there is group_id, add student to the group
+    if payload.group_id:
+        async with httpx.AsyncClient() as client:
+            # Check if group exists
+            group_response = await client.get(f"{GROUP_SERVICE_URL}/{payload.group_id}")
+            if group_response.status_code == 404:
+                # Create group if it doesn't exist
+                create_group_response = await client.post(f"{GROUP_SERVICE_URL}/create", json=payload.dict())
+                if create_group_response.status_code != 201:
+                    raise HTTPException(status_code=500, detail="Failed to create group")
+                payload.group_id = create_group_response.json()['id']
+
+            await client.put(f"{GROUP_SERVICE_URL}/{payload.group_id}/student/{student_id}")
+
+    return StudentOut(**response)
 
 @router.get('/', response_model=List[StudentOut])
 async def get_students():

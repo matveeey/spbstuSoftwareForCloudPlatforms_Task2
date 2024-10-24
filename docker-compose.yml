@@ -5,6 +5,7 @@ services:
     environment:
       PYTHONPATH: ${PYTHONPATH}
       DATABASE_URI: ${DATABASE_URI}
+      GROUP_SERVICE_URL: ${GROUP_SERVICE_URL}
     volumes:
       - ./student_service/:/app/
       - ./common:/app/common

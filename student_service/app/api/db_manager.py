@@ -14,7 +14,7 @@ async def get_student(id):
     return await database.fetch_one(query=query)
 
 async def delete_student(id: int):
-    query = students.delete().where(students.c.id==id)
+    query = students.delete().where(students.c.id == id)
     return await database.execute(query=query)
 
 async def update_student(id: int, payload: StudentIn):

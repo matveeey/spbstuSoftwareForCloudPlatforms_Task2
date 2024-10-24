@@ -13,10 +13,10 @@ class StudentUpdate(StudentIn):
     group_id: Optional[int] = None
 
 class GroupIn(BaseModel):
-    name: str
-
-class GroupOut(GroupIn):
     id: int
 
-class GroupUpdate(BaseModel):
+class GroupOut(GroupIn):
+    students: List[StudentOut]
+
+class GroupUpdate(GroupIn):
     name: Optional[str] = None

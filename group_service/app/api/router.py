@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from typing import List
 import httpx, os, json
 
-from app.api.models import GroupOut, GroupIn, GroupUpdate
+from app.api.models import GroupOut, GroupIn, GroupUpdate, StudentIn, StudentOut
 from app.api import db_manager
 
 DATABASE_URI = os.getenv('DATABASE_URI')
@@ -15,9 +15,9 @@ async def create_group(payload: GroupIn):
     group_id = await db_manager.add_group(payload)
     response = {
         'id': group_id,
-        **payload.dict()
+        'students': []
     }
-    return response
+    return GroupOut(**response)
 
 @router.get('/', response_model=List[GroupOut])
 async def get_groups():
@@ -28,7 +28,14 @@ async def get_group(id: int):
     group = await db_manager.get_group(id)
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
-    return group
+
+    # Get students list
+    students = await db_manager.get_students_in_group(id)
+    group_with_students = {
+        'id': group['id'],
+        'students': students
+    }
+    return GroupOut(**group_with_students)
 
 @router.put('/{id}/', response_model=GroupOut)
 async def update_group(id: int, payload: GroupUpdate):
@@ -48,6 +55,15 @@ async def delete_group(id: int):
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
     return await db_manager.delete_group(id)
+
+@router.post('/create', response_model=StudentOut, status_code=201)
+async def create_group_for_student(payload: StudentIn):
+    group_id = await db_manager.add_group(GroupIn(payload.group_id))
+    response = {
+        'id': group_id,
+        'students': []
+    }
+    return GroupOut(**response)
 
 @router.put('/{id}/student/{student_id}', response_model=None)
 async def add_student_to_group(id: int, student_id: int):
