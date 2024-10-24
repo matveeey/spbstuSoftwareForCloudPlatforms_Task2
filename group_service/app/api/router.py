@@ -1,8 +1,12 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
+import httpx, os, json
 
 from app.api.models import GroupOut, GroupIn, GroupUpdate
 from app.api import db_manager
+
+DATABASE_URI = os.getenv('DATABASE_URI')
+STUDENT_SERVICE_URL = os.getenv('STUDENT_SERVICE_URL')
 
 router = APIRouter()
 
@@ -44,3 +48,27 @@ async def delete_group(id: int):
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
     return await db_manager.delete_group(id)
+
+@router.put('/{id}/student/{student_id}', response_model=None)
+async def add_student_to_group(id: int, student_id: int):
+    async with httpx.AsyncClient() as client:
+        response = await client.put(f"{STUDENT_SERVICE_URL}/{student_id}/group/{id}")
+        if response.status_code != 200:
+            try:
+                error_detail = response.json().get("detail", "Error")
+            except json.JSONDecodeError:
+                error_detail = "Invalid response from student service"
+            raise HTTPException(status_code=response.status_code, detail=error_detail)
+    return None
+
+@router.delete('/{id}/student/{student_id}', response_model=None)
+async def delete_student_from_group(id: int, student_id: int):
+    async with httpx.AsyncClient() as client:
+        response = await client.delete(f"{STUDENT_SERVICE_URL}/{student_id}/group/remove")
+        if response.status_code != 200:
+            try:
+                error_detail = response.json().get("detail", "Error")
+            except json.JSONDecodeError:
+                error_detail = "Invalid response from student service"
+            raise HTTPException(status_code=response.status_code, detail=error_detail)
+    return None

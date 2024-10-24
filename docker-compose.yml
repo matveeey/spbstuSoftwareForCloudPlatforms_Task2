@@ -3,18 +3,23 @@ services:
     build: ./student_service
     command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
     environment:
+      PYTHONPATH: ${PYTHONPATH}
       DATABASE_URI: ${DATABASE_URI}
     volumes:
       - ./student_service/:/app/
+      - ./common:/app/common
     ports:
       - 8001:8000
   group_service:
     build: ./group_service
     command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
     environment:
+      PYTHONPATH: ${PYTHONPATH}
       DATABASE_URI: ${DATABASE_URI}
+      STUDENT_SERVICE_URL: ${STUDENT_SERVICE_URL}
     volumes:
       - ./group_service/:/app/
+      - ./common:/app/common
     ports:
       - 8002:8000
   db:
