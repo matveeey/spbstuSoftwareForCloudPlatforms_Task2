@@ -8,12 +8,15 @@ class StudentIn(BaseModel):
 class StudentOut(StudentIn):
     id: int
 
+class StudentUpdate(StudentIn):
+    name: Optional[str] = None
+    group_id: Optional[int] = None
+
 class GroupIn(BaseModel):
     id: int
-    students: List[int]
 
 class GroupOut(GroupIn):
-    pass
+    students: List[StudentOut]
 
 class GroupUpdate(GroupIn):
-    students: Optional[List[int]] = None
+    name: Optional[str] = None
