@@ -3,7 +3,7 @@ from sqlalchemy import (Column, Integer, MetaData, String, Table,
                         create_engine)
 from databases import Database
 
-DATABASE_URI = 'postgresql://student_db_username:student_db_password@db/student_db_dev'
+DATABASE_URI = os.getenv('DATABASE_URI')
 
 engine = create_engine(DATABASE_URI)
 metadata = MetaData()

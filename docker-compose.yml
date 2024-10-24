@@ -2,6 +2,8 @@ services:
   student_service:
     build: ./student_service
     command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    environment:
+      DATABASE_URI: ${DATABASE_URI}
     volumes:
       - ./student_service/:/app/
     ports:
@@ -9,9 +11,9 @@ services:
   db:
     image: postgres:12.1-alpine
     environment:
-      - POSTGRES_USER=student_db_username
-      - POSTGRES_PASSWORD=student_db_password
-      - POSTGRES_DB=student_db_dev
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 
