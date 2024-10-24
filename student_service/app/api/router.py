@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 
-from app.api.models import StudentOut, StudentIn, StudentUpdate
+from app.api.models import StudentOut, StudentIn
 from app.api import db_manager
 
 router = APIRouter()
@@ -16,7 +16,7 @@ async def create_student(payload: StudentIn):
     return response
 
 @router.get('/', response_model=List[StudentOut])
-async def get_router():
+async def get_students():
     return await db_manager.get_all_students()
 
 @router.get('/{id}/', response_model=StudentOut)
@@ -27,7 +27,7 @@ async def get_student(id: int):
     return student
 
 @router.put('/{id}/', response_model=StudentOut)
-async def update_student(id: int, payload: StudentUpdate):
+async def update_student(id: int, payload: StudentIn):
     student = await db_manager.get_student(id)
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")

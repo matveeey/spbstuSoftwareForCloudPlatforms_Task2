@@ -1,7 +1,7 @@
-from app.api.models import GroupIn, GroupOut, GroupUpdate
+from app.api.models import Group
 from app.api.db import groups, database
 
-async def add_group(payload: GroupIn):
+async def add_group(payload: Group):
     query = groups.insert().values(**payload.dict())
     return await database.execute(query=query)
 
@@ -17,7 +17,7 @@ async def delete_group(id: int):
     query = groups.delete().where(groups.c.id==id)
     return await database.execute(query=query)
 
-async def update_group(id: int, payload: GroupIn):
+async def update_group(id: int, payload: Group):
     query = (
         groups
         .update()

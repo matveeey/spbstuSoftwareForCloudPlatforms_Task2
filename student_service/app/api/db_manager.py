@@ -1,4 +1,4 @@
-from app.api.models import StudentIn, StudentOut, StudentUpdate
+from app.api.models import StudentIn, StudentOut
 from app.api.db import students, database
 
 async def add_student(payload: StudentIn):

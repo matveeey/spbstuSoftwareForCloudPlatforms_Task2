@@ -1,1 +1,1 @@
-from common.common_models.models import GroupIn, GroupOut, GroupUpdate, StudentOut, StudentIn
+from common.common_models.models import Group, StudentOut, StudentIn
