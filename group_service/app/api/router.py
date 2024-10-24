@@ -1,12 +1,12 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 
-from app.api.models import Group, StudentIn
+from app.api.models import Group
 from app.api import db_manager
 
 router = APIRouter()
 
-@router.post('/', response_model=Group, status_code=201)
+@router.post('/', response_model=Group)
 async def create_group(payload: Group):
     group_id = await db_manager.add_group(payload)
     response = {
