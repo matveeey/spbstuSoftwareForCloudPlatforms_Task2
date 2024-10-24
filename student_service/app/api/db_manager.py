@@ -10,7 +10,7 @@ async def get_all_students():
     return await database.fetch_all(query=query)
 
 async def get_student(id):
-    query = students.select(students.c.id==id)
+    query = students.select().where(students.c.id == id)
     return await database.fetch_one(query=query)
 
 async def delete_student(id: int):

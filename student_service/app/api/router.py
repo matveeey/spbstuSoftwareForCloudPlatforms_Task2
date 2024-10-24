@@ -17,7 +17,7 @@ async def create_student(payload: StudentIn):
 
 @router.get('/', response_model=List[StudentOut])
 async def get_router():
-    return await db_manager.get_all_router()
+    return await db_manager.get_all_students()
 
 @router.get('/{id}/', response_model=StudentOut)
 async def get_student(id: int):
